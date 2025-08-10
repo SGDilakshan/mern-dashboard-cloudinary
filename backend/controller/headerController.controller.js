@@ -29,3 +29,40 @@ exports.saveHeader = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+// Update existing Header
+exports.updateHeader = async (req, res) => {
+  const { title, imageUrl } = req.body;
+
+  try {
+    let header = await Header.findOne();
+    if (!header) {
+      return res.status(404).json({ message: "Header not found" });
+    }
+
+    if (title !== undefined) header.title = title;
+    if (imageUrl !== undefined) header.imageUrl = imageUrl;
+
+    await header.save();
+    res.json(header);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
+// Delete the Header data (if you want to reset/remove it)
+exports.deleteHeader = async (req, res) => {
+  try {
+    const header = await Header.findOne();
+    if (!header) {
+      return res.status(404).json({ message: "Header not found" });
+    }
+
+    await header.deleteOne();
+    res.json({ message: "Header deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
